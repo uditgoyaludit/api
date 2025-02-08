@@ -11,7 +11,7 @@ export default function handler(req, res) {
         return res.status(400).json({ message: 'No content provided' });
     }
 
-    const filePath = path.join(process.cwd(), 'public', 'api.txt');
+    const filePath = path.join('/tmp/', 'api.txt'); // Use /tmp/ for Netlify compatibility
 
     try {
         fs.writeFileSync(filePath, content, 'utf8');
