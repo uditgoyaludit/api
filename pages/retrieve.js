@@ -1,16 +1,20 @@
-import fs from 'fs';
-import path from 'path';
+import { useEffect, useState } from 'react';
 
-export default function handler(req, res) {
-    const filePath = path.join('/tmp/', 'api.txt');
-    let content = '';
+export default function RetrievePage() {
+    const [content, setContent] = useState('');
 
-    try {
-        content = fs.readFileSync(filePath, 'utf8');
-    } catch (err) {
-        content = 'No content found.';
-    }
+    useEffect(() => {
+        fetch('/api/retrieve')
+            .then(response => response.text())
+            .then(data => setContent(data))
+            .catch(() => setContent('Error retrieving content.'));
+    }, []);
 
-    res.setHeader('Content-Type', 'text/plain');
-    res.status(200).send(content);
+    return (
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+            <h1>Saved Content</h1>
+            <p>{content}</p>
+            <a href="/">Go Back</a>
+        </div>
+    );
 }
