@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ res }) {
     const filePath = path.join(process.cwd(), 'public', 'api.txt');
     let content = '';
 
@@ -11,15 +11,12 @@ export async function getServerSideProps() {
         content = 'No content found.';
     }
 
-    return { props: { content } };
+    // Set response headers to return plain text
+    res.setHeader('Content-Type', 'text/plain');
+    res.end(content);
+    return { props: {} }; // No need for props since we're sending raw content
 }
 
-export default function RetrievePage({ content }) {
-    return (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-            <h1>Saved Content</h1>
-            <p>{content}</p>
-            <a href="/">Go Back</a>
-        </div>
-    );
+export default function RetrievePage() {
+    return null; // This page will never render HTML
 }
