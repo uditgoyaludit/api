@@ -2,15 +2,13 @@ import fs from 'fs';
 import path from 'path';
 
 export default function handler(req, res) {
-    const filePath = path.join('/tmp/', 'api.txt');
+    const filePath = path.join('/tmp/', 'api.txt'); // Using /tmp/ for Netlify compatibility
 
-    let content = '';
     try {
-        content = fs.readFileSync(filePath, 'utf8');
+        const content = fs.readFileSync(filePath, 'utf8');
+        res.setHeader('Content-Type', 'text/plain');
+        res.status(200).send(content); // Directly returning raw text, no JSON or HTML
     } catch (err) {
-        content = 'No content found.';
+        res.status(404).send('File not found');
     }
-
-    res.setHeader('Content-Type', 'text/plain');
-    res.status(200).send(content);
 }
