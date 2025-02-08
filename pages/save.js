@@ -1,23 +1,39 @@
-import fs from 'fs';
-import path from 'path';
+import { useState } from 'react';
 
-export default function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method Not Allowed' });
-    }
+export default function SavePage() {
+    const [content, setContent] = useState('');
+    const [message, setMessage] = useState('');
 
-    const { content } = req.body;
-    if (!content) {
-        return res.status(400).json({ message: 'No content provided' });
-    }
+    const handleSave = async (e) => {
+        e.preventDefault();
 
-    // Use /tmp/ instead of public
-    const filePath = path.join('/tmp/', 'api.txt');
+        try {
+            const response = await fetch('/api/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content }),
+            });
 
-    try {
-        fs.writeFileSync(filePath, content, 'utf8');
-        return res.status(200).json({ message: 'File saved successfully!' });
-    } catch (error) {
-        return res.status(500).json({ message: 'Error saving file', error });
-    }
+            const result = await response.json();
+            setMessage(result.message);
+        } catch (error) {
+            setMessage('Error saving file.');
+        }
+    };
+
+    return (
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+            <h1>Save Content</h1>
+            <form onSubmit={handleSave}>
+                <textarea 
+                    value={content} 
+                    onChange={(e) => setContent(e.target.value)} 
+                    rows="5" cols="50"
+                />
+                <br />
+                <button type="submit">Save</button>
+            </form>
+            {message && <p>{message}</p>}
+        </div>
+    );
 }
