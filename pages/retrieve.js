@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 export default function handler(req, res) {
-    const filePath = path.join(process.cwd(), 'public', 'api.txt');
+    const filePath = path.join('/tmp/', 'api.txt');
     let content = '';
 
     try {
